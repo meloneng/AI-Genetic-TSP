@@ -1,0 +1,43 @@
+
+To calculate distance
+
+calcFunc:
+    Receives list
+    Takes first element of list
+    Calculates distance to next list element
+    Keep summing distance up until of list
+    Returns the total value.
+
+selectTwoRoutes:
+    Receives population
+    Selects two routes from population based on their
+        fitness
+    Returns both routes
+
+crossover:
+    Select two consecutive elements of the first parent
+        and put it into child route on the same indexes
+        they were in on the parent
+    Fill the rest of the indexes with the other parent
+        elements
+    Have a small chance of applying mutation(0.05%)
+
+
+
+
+
+
+
+
+PS:
+    pega os dois primeiros elementos
+    entra em loop do array
+    pula os dois primeiros elementos e vai comparando
+
+    pega um número aleatório que seja o index de um
+    elemento do array, pega um segundo número aleatório
+    que dirá quantos indexes seguintes vai pegar após.
+    colocar em ordem esses cromossomos de como é no
+    primeiro parent.
+    preencher o child com os cromossomos do segundo parent seguindo a ordem dos indexes e ignorando caso
+    o cromossomo já esteja no child.
