@@ -39,5 +39,6 @@ PS:
     que dirá quantos indexes seguintes vai pegar após.
     colocar em ordem esses cromossomos de como é no
     primeiro parent.
-    preencher o child com os cromossomos do segundo parent seguindo a ordem dos indexes e ignorando caso
+    preencher o child com os cromossomos do segundo parent
+    seguindo a ordem dos indexes e ignorando caso
     o cromossomo já esteja no child.
