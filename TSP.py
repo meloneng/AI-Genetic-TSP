@@ -1,29 +1,53 @@
 import random
 
-# Specifying the cites on a array
-# Cities: A, B, C, D, E
-# 0 represents the cities distance to itself,
 
+def roulet(npopulation,nPais):
+    fitnessAbs=[]
+    fitnessRelative=[]
+    chosenParents=[]
+    roulet=[]
+    aux=0 
+    for i in range(len(npopulation)):
+        fitness=calcFitness(npopulation[i])
+        fitnessAbs.append(fitness)
+        aux+=fitness
 
-class cityA:
+    roulet.append(0)
+    for i in range(len(npopulation)):
+        fitnessRelative.append(fitnessAbs[i]/aux)
+        roulet.append(round(roulet[i]+fitnessRelative[i],3))
+        
+    for a in range(nPais):
+        numero=random.randint(0,int(roulet[len(roulet)-1]*1000))
+        for i in range(len(roulet)-1):
+            if(numero>roulet[i]*1000 and numero<=roulet[i+1]*1000):
+                chosenParents.append(npopulation[i])
+    return chosenParents
+
+class city1:
     ind = 0
-    dist = [0, 2, 6, 3, 6]
+    city = 1
+    dist = [0, 2, 999, 3, 6]
 
-class cityB:
+class city2:
     ind = 1
-    dist = [2, 0, 4, 3, 7]
+    city = 2
+    dist = [2, 0, 4, 3, 999]
 
-class cityC:
+class city3:
     ind = 2
-    dist = [6, 4, 0, 7, 3]
+    city = 3
+    dist = [999, 4, 0, 7, 3]
 
-class cityD:
+class city4:
     ind = 3
+    city = 4
     dist = [3, 3, 7, 0, 3]
 
-class cityE:
+class city5:
     ind = 4
-    dist = [6, 7, 3, 3, 0]
+    city = 5
+    dist = [6, 999, 3, 3, 0]
 
 # Fitness is multiplied by -1 because it makes the
 # smallest path the biggest score
@@ -32,11 +56,26 @@ def calcFitness(dna):
     for i in range (1, len(dna)):
         fitness += dna[i].dist[dna[i-1].ind]
 
-    return (fitness * -1)
+    return (1/fitness)
+
+def calcDist(dna):
+    distance = 0
+    for i in range (1, len(dna)):
+        distance += dna[i].dist[dna[i-1].ind]
+    
+    return distance
+
+
+def bestOfPop(population):
+    bestInPop = 999999
+    for i in range(len(population)):
+        if(calcDist(population[i]) < bestInPop):
+            bestRoute = population[i]
+    return bestRoute
 
 
 def dnaGenerate():
-    dna = [cityA, cityB, cityC, cityD, cityE]
+    dna = [city1, city2, city3, city4, city5]
     random.shuffle(dna)
     return dna
 
@@ -94,19 +133,65 @@ def crossover(parents):
 
     return child
 
+def crossoverlite(parents):
+    aux1 = 0
+    aux2 = 0
+    child = parents[1]
+    #printRoute(child)
+    while(aux1 < 5):
+        if(aux2==1 or aux2==2):
+            aux2 += 1
+            continue
+        if(parents[0][aux1] in child):
+            aux1 += 1    
+            continue
 
-population = populationGenerate(50)
-parents = selectTwoRoutes(population)
-bestYet = parents[0]
-for i in range(100):
-    for j in range(50):
-        child = crossover(parents)
-        print(child)
+        child[aux2] = parents[0][aux1]
+        aux2 += 1
+        aux1 += 1
+    
+    if((random.randint(0,10000) < 3)):
+        aux3 = random.randint(0, len(child)-1)
+        aux4 = random.randint(0, len(child)-1)
+        while(aux4 == aux3):
+            aux4 = random.randint(0, len(child)-1)
+        
+        child[aux3] , child[aux4] = child[aux4] , child[aux3]
+
+    return child
+
+
+def printRoute(route):
+    print("{0} -- {1} -- {2} -- {3} -- {4}".format(route[0].city, route[1].city, route[2].city, route[3].city, route[4].city))
+    print("route score: {}".format(calcDist(bestYet)))
+
+def printParent(parents):
+    print("{0} -- {1} -- {2} -- {3} -- {4}".format(parents[0].city, parents[1].city, parents[2].city, parents[3].city, parents[4].city))
+
+
+
+genSize = 10
+numberOfGens = 6
+population = populationGenerate(genSize)
+parents = roulet(population, 2)
+bestYet = bestOfPop(population)
+for i in range(numberOfGens-1):
+    population.append(bestYet)
+    
+    for j in range(genSize):
+        child = crossoverlite(parents)
         population.append(child)
-    parents = selectTwoRoutes(population)
-    bestYet = parents[0]
-    print(bestYet)
+    
+    for x in population:
+        printRoute(x)
+
+    parents = roulet(population, 2)
+    bestYet = bestOfPop(population)
 
 
-print("\nthe best route chosen was:\n")
-print(bestYet)
+print("\nThe best route chosen was:\n")
+printRoute(bestYet)
+
+
+
+
